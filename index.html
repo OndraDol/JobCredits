@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <title>Job portály – kredity</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    :root {
+      --primary-blue: #0055a5;
+      --primary-blue-2: #0b72c3;
+      --light-blue: #e6f0f7;
+      --dark-text: #1f2933;
+      --muted-text: #6b7280;
+      --light-text: #ffffff;
+      --border-color: #e3e8f0;
+      --background-color: #f5f7fb;
+      --accent-soft: rgba(11, 114, 195, 0.06);
+      --accent-strong: #0b72c3;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--dark-text);
+      background:
+        radial-gradient(circle at top left, rgba(11, 114, 195, 0.16), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(0, 85, 165, 0.16), transparent 55%),
+        var(--background-color);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* SIDEBAR */
+
+    .sidebar {
+      width: 260px;
+      padding: 18px 18px 20px;
+      background: linear-gradient(180deg, var(--primary-blue) 0%, #02315f 100%);
+      color: var(--light-text);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      box-shadow: 6px 0 20px rgba(15, 23, 42, 0.25);
+    }
+
+    .brand-card {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 30% 0, #ffffff 0%, #93c5fd 32%, #2563eb 70%, #1d4ed8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: #0b1f3b;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.42);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-text-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .brand-text-subtitle {
+      font-size: 0.78rem;
+      opacity: 0.9;
+    }
+
+    .sidebar-section-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      opacity: 0.8;
+      margin-bottom: 6px;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-link {
+      width: 100%;
+      border: none;
+      background: transparent;
+      color: inherit;
+      padding: 8px 9px;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      cursor: pointer;
+      gap: 2px;
+      transition: background 0.15s ease, transform 0.05s ease;
+      text-align: left;
+    }
+
+    .nav-link:hover {
+      background: rgba(15, 23, 42, 0.26);
+      transform: translateY(-1px);
+    }
+
+    .nav-link.active {
+      background: #f9fafb;
+      color: #0b1f3b;
+    }
+
+    .nav-link-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .nav-link-subtitle {
+      font-size: 0.75rem;
+      opacity: 0.85;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 0.78rem;
+      opacity: 0.9;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-top: 1px solid rgba(255, 255, 255, 0.18);
+      padding-top: 10px;
+    }
+
+    .sidebar-footer-label {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.7rem;
+      opacity: 0.78;
+    }
+
+    .sidebar-footer-value {
+      font-weight: 500;
+    }
+
+    /* MAIN */
+
+    .main {
+      flex: 1;
+      padding: 20px 26px;
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 4px;
+    }
+
+    .page-title {
+      font-size: clamp(1.4rem, 2.2vw, 1.7rem);
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .page-subtitle {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted-text);
+    }
+
+    .section {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-subtitle {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted-text);
+    }
+
+    .section-kicker {
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-size: 0.72rem;
+      color: var(--muted-text);
+    }
+
+    .portal-link {
+      font-size: 0.8rem;
+      color: var(--primary-blue-2);
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 4px 10px;
+      background: rgba(11, 114, 195, 0.06);
+      border: 1px solid rgba(11, 114, 195, 0.16);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .portal-link span.icon {
+      font-size: 0.9rem;
+    }
+
+    /* CARDS & LAYOUT */
+
+    .layout-main {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      border: 1px solid var(--border-color);
+      padding: 14px 16px 14px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-title {
+      margin: 0 0 4px;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted-text);
+    }
+
+    .big-number {
+      font-size: clamp(2.3rem, 4.3vw, 3rem);
+      font-weight: 700;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .big-number .unit {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.13em;
+      color: var(--muted-text);
+    }
+
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      color: var(--muted-text);
+    }
+
+    .pill {
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .pill-muted-dot {
+      background: #9ca3af;
+    }
+
+    .pill-warning-dot {
+      background: #eab308;
+    }
+
+    .chart-card {
+      padding-bottom: 16px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 230px;
+      display: block;
+      border-radius: 12px;
+      background: linear-gradient(180deg, #f9fafb 0%, #eef2ff 100%);
+    }
+
+    .chart-legend {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--muted-text);
+      margin-top: 6px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chart-legend-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+      display: inline-block;
+    }
+
+    .timestamp {
+      font-variant-numeric: tabular-nums;
+    }
+
+    .history-card {
+      margin-top: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 0.85rem;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--muted-text);
+      background: #f9fafb;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    tr:hover td {
+      background: #f3f4ff;
+    }
+
+    .portal-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: rgba(11,114,195,0.08);
+      color: var(--accent-strong);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .summary-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      padding: 10px 11px;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .summary-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .summary-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .summary-chip {
+      font-size: 0.7rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      text-transform: uppercase;
+      letter-spacing: 0.11em;
+      color: var(--muted-text);
+    }
+
+    .summary-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .summary-value {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .summary-unit {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted-text);
+    }
+
+    .summary-sub {
+      font-size: 0.78rem;
+      color: var(--muted-text);
+    }
+
+    .summary-empty {
+      font-size: 0.78rem;
+      color: var(--muted-text);
+    }
+
+    .error {
+      color: #e11d48;
+      font-size: 0.9rem;
+    }
+
+    .empty {
+      font-size: 0.9rem;
+      color: var(--muted-text);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    @media (max-width: 960px) {
+      .app-shell {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 16px;
+        padding: 10px 14px;
+      }
+
+      .sidebar-footer {
+        margin-top: 0;
+        border-top: none;
+        align-items: flex-end;
+        text-align: right;
+      }
+
+      .nav-list {
+        flex-direction: row;
+      }
+
+      .nav-link {
+        min-width: 120px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main {
+        padding: 16px;
+      }
+
+      .layout-main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .summary-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand-card">
+        <div class="brand-logo">AH</div>
+        <div class="brand-text">
+          <div class="brand-text-title">AURES Holdings</div>
+          <div class="brand-text-subtitle">Job portál kredity</div>
+        </div>
+      </div>
+
+      <div>
+        <p class="sidebar-section-label">Pohledy</p>
+        <ul class="nav-list" id="nav-menu">
+          <li>
+            <button class="nav-link active" data-view-id="overview">
+              <span class="nav-link-title">Přehled</span>
+              <span class="nav-link-subtitle">Teamio + InWork</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view-id="teamio">
+              <span class="nav-link-title">Teamio</span>
+              <span class="nav-link-subtitle">my.teamio.com</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view-id="inwork">
+              <span class="nav-link-title">InWork</span>
+              <span class="nav-link-subtitle">fajnsprava.cz</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="sidebar-footer-label">Poslední update dat</span>
+        <span class="sidebar-footer-value" id="last-updated">–</span>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+      <header class="page-header">
+        <div class="page-title">
+          <span>Job portály – kredity</span>
+          <span class="page-badge">internal HR monitoring</span>
+        </div>
+        <p class="page-subtitle">
+          Denní snapshot kreditů pro Teamio a InWork. Data se čtou z <code>credits.json</code>, který generují Python skripty s Playwrightem.
+        </p>
+      </header>
+
+      <!-- VIEW: OVERVIEW -->
+      <section id="view-overview" class="view active">
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Souhrn</div>
+              <div class="section-title">Stav portálů v posledním měření</div>
+              <p class="section-subtitle">
+                Agregovaný přehled posledních hodnot, trendu, minima/maxima a průměru pro každý portál.
+              </p>
+            </div>
+          </div>
+          <div class="summary-grid" id="overview-grid">
+            <!-- doplní JS -->
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Historie</div>
+              <div class="section-title">Poslední měření napříč portály</div>
+              <p class="section-subtitle">
+                Chronologický přehled napříč všemi portály (nejnovější nahoře).
+              </p>
+            </div>
+          </div>
+          <section class="card history-card">
+            <p class="card-title">Historie měření</p>
+            <div id="overview-history">
+              <p class="empty">Načítám data…</p>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- VIEW: TEAMIO DETAIL -->
+      <section id="view-teamio" class="view">
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Detail portálu</div>
+              <div class="section-title">Teamio</div>
+              <p class="section-subtitle">
+                Stav kreditů v Teamio – zbývající předplatné pro inzerci a odpovědi.
+              </p>
+            </div>
+            <a class="portal-link" href="https://my.teamio.com/recruit/dashboard" target="_blank" rel="noopener noreferrer">
+              <span class="icon">↗</span>
+              <span>Otevřít Teamio</span>
+            </a>
+          </div>
+
+          <div class="layout-main">
+            <section class="card">
+              <p class="card-title">Aktuální stav</p>
+              <div id="teamio-current">
+                <p class="empty">Načítám data…</p>
+              </div>
+            </section>
+
+            <section class="card chart-card">
+              <p class="card-title">Vývoj v čase</p>
+              <canvas id="teamio-chart"></canvas>
+              <div class="chart-legend">
+                <div class="chart-legend-main">
+                  <span class="chart-legend-dot"></span>
+                  <span>Počet kreditů (Teamio)</span>
+                </div>
+                <div id="teamio-chart-range" class="timestamp"></div>
+              </div>
+            </section>
+          </div>
+
+          <section class="card history-card">
+            <p class="card-title">Historie měření</p>
+            <div id="teamio-history">
+              <p class="empty">Načítám data…</p>
+            </div>
+          </section>
+        </section>
+      </section>
+
+      <!-- VIEW: INWORK DETAIL -->
+      <section id="view-inwork" class="view">
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Detail portálu</div>
+              <div class="section-title">InWork (Fajnsprava.cz)</div>
+              <p class="section-subtitle">
+                Stav kreditů v InWork (Fajnsprava.cz) – využitelné pro inzerci.
+              </p>
+            </div>
+            <a class="portal-link" href="https://www.fajnsprava.cz/" target="_blank" rel="noopener noreferrer">
+              <span class="icon">↗</span>
+              <span>Otevřít InWork</span>
+            </a>
+          </div>
+
+          <div class="layout-main">
+            <section class="card">
+              <p class="card-title">Aktuální stav</p>
+              <div id="inwork-current">
+                <p class="empty">Načítám data…</p>
+              </div>
+            </section>
+
+            <section class="card chart-card">
+              <p class="card-title">Vývoj v čase</p>
+              <canvas id="inwork-chart"></canvas>
+              <div class="chart-legend">
+                <div class="chart-legend-main">
+                  <span class="chart-legend-dot"></span>
+                  <span>Počet kreditů (InWork)</span>
+                </div>
+                <div id="inwork-chart-range" class="timestamp"></div>
+              </div>
+            </section>
+          </div>
+
+          <section class="card history-card">
+            <p class="card-title">Historie měření</p>
+            <div id="inwork-history">
+              <p class="empty">Načítám data…</p>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const PORTAL_CONFIG = {
+      Teamio: {
+        id: 'Teamio',
+        label: 'Teamio',
+        jsonPortalKey: 'Teamio',
+        url: 'https://my.teamio.com/recruit/dashboard',
+        unit: 'kreditů'
+      },
+      InWork: {
+        id: 'InWork',
+        label: 'InWork (Fajnsprava.cz)',
+        jsonPortalKey: 'InWork',
+        url: 'https://www.fajnsprava.cz/',
+        unit: 'kreditů'
+      }
+    };
+
+    let allEntries = [];
+    let entriesByPortal = {};
+    let statsByPortal = {};
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initNav();
+      loadCredits();
+    });
+
+    function initNav() {
+      const menu = document.getElementById('nav-menu');
+      if (!menu) return;
+      menu.addEventListener('click', (event) => {
+        const button = event.target.closest('.nav-link');
+        if (!button) return;
+        const viewId = button.getAttribute('data-view-id');
+        if (!viewId) return;
+
+        document.querySelectorAll('.nav-link').forEach(btn => {
+          btn.classList.toggle('active', btn === button);
+        });
+
+        document.querySelectorAll('.view').forEach(section => {
+          section.classList.remove('active');
+        });
+        const target = document.getElementById('view-' + viewId);
+        if (target) target.classList.add('active');
+      });
+    }
+
+    async function loadCredits() {
+      try {
+        const response = await fetch('credits.json?ts=' + Date.now());
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
+        const entries = await response.json();
+
+        if (!Array.isArray(entries) || entries.length === 0) {
+          handleNoData();
+          return;
+        }
+
+        allEntries = entries
+          .map(e => ({
+            portal: String(e.portal || '').trim(),
+            timestamp: e.timestamp,
+            date: new Date(e.timestamp),
+            credits: Number(e.credits)
+          }))
+          .filter(e => !Number.isNaN(e.credits) && !Number.isNaN(e.date.getTime()));
+
+        if (allEntries.length === 0) {
+          handleNoData();
+          return;
+        }
+
+        // group by portal
+        entriesByPortal = {};
+        allEntries.forEach(e => {
+          if (!entriesByPortal[e.portal]) {
+            entriesByPortal[e.portal] = [];
+          }
+          entriesByPortal[e.portal].push(e);
+        });
+
+        // compute stats per portal
+        statsByPortal = {};
+        ['Teamio', 'InWork'].forEach(portalKey => {
+          const cfg = PORTAL_CONFIG[portalKey];
+          const group = entriesByPortal[cfg.jsonPortalKey] || [];
+          if (group.length > 0) {
+            statsByPortal[portalKey] = computeStats(group);
+          }
+        });
+
+        // last updated
+        const last = [...allEntries].sort((a, b) => b.date - a.date)[0];
+        const lastUpdatedEl = document.getElementById('last-updated');
+        if (lastUpdatedEl) {
+          lastUpdatedEl.textContent = last.date.toLocaleString('cs-CZ');
+        }
+
+        renderOverview();
+        renderPortalDetail('Teamio');
+        renderPortalDetail('InWork');
+      } catch (err) {
+        const msg = 'Chyba při načítání souboru credits.json: ' + err;
+        document.getElementById('overview-history').innerHTML =
+          '<p class="error">' + msg + '</p>';
+        document.getElementById('overview-grid').innerHTML = '';
+        ['teamio', 'inwork'].forEach(prefix => {
+          const cur = document.getElementById(prefix + '-current');
+          const hist = document.getElementById(prefix + '-history');
+          if (cur) cur.innerHTML = '<p class="error">' + msg + '</p>';
+          if (hist) hist.innerHTML = '';
+          clearChart(prefix + '-chart');
+          const rangeEl = document.getElementById(prefix + '-chart-range');
+          if (rangeEl) rangeEl.textContent = '';
+        });
+        const lastUpdatedEl = document.getElementById('last-updated');
+        if (lastUpdatedEl) lastUpdatedEl.textContent = '–';
+      }
+    }
+
+    function handleNoData() {
+      const msg = 'Zatím nemáš žádná změřená data. Spusť skript pro načtení kreditů.';
+      document.getElementById('overview-grid').innerHTML =
+        '<p class="empty">' + msg + '</p>';
+      document.getElementById('overview-history').innerHTML = '';
+      ['teamio', 'inwork'].forEach(prefix => {
+        const cur = document.getElementById(prefix + '-current');
+        const hist = document.getElementById(prefix + '-history');
+        if (cur) cur.innerHTML = '<p class="empty">' + msg + '</p>';
+        if (hist) hist.innerHTML = '';
+        clearChart(prefix + '-chart');
+        const rangeEl = document.getElementById(prefix + '-chart-range');
+        if (rangeEl) rangeEl.textContent = '';
+      });
+      const lastUpdatedEl = document.getElementById('last-updated');
+      if (lastUpdatedEl) lastUpdatedEl.textContent = '–';
+    }
+
+    function computeStats(group) {
+      const asc = group.slice().sort((a, b) => a.date - b.date);
+      const desc = group.slice().sort((a, b) => b.date - a.date);
+      const latest = desc[0];
+      const first = asc[0];
+      const count = group.length;
+
+      const values = asc.map(e => e.credits);
+      const min = Math.min(...values);
+      const max = Math.max(...values);
+      const avg = values.reduce((sum, v) => sum + v, 0) / values.length;
+
+      const totalChange = latest.credits - first.credits;
+      let lastChange = null;
+      if (desc.length >= 2) {
+        lastChange = latest.credits - desc[1].credits;
+      }
+
+      return {
+        asc,
+        desc,
+        latest,
+        first,
+        count,
+        min,
+        max,
+        avg,
+        totalChange,
+        lastChange
+      };
+    }
+
+    function renderOverview() {
+      const container = document.getElementById('overview-grid');
+      const historyContainer = document.getElementById('overview-history');
+
+      if (!container || !historyContainer) return;
+
+      let html = '';
+
+      ['Teamio', 'InWork'].forEach(portalKey => {
+        const cfg = PORTAL_CONFIG[portalKey];
+        const stats = statsByPortal[portalKey];
+
+        if (!stats) {
+          html += [
+            '<div class="summary-card">',
+              '<div class="summary-title-row">',
+                '<div class="summary-title">', cfg.label, '</div>',
+                '<div class="summary-chip">bez dat</div>',
+              '</div>',
+              '<div class="summary-empty">Zatím žádný záznam v <code>credits.json</code>.</div>',
+            '</div>'
+          ].join('');
+        } else {
+          const latest = stats.latest;
+          const diffStart = stats.totalChange;
+          const diffStartText =
+            diffStart === 0 ? 'bez změny od startu' :
+            (diffStart > 0 ? '+' + diffStart + ' vs. první měření' :
+                             diffStart + ' vs. první měření');
+
+          const diffLast = stats.lastChange;
+          const diffLastText =
+            diffLast === null ? '–' :
+            diffLast === 0 ? 'bez změny od minula' :
+            (diffLast > 0 ? '+' + diffLast + ' vs. předchozí měření' :
+                            diffLast + ' vs. předchozí měření');
+
+          html += [
+            '<div class="summary-card">',
+              '<div class="summary-title-row">',
+                '<div class="summary-title">', cfg.label, '</div>',
+                '<div class="summary-chip">aktuálně</div>',
+              '</div>',
+              '<div class="summary-value-row">',
+                '<span class="summary-value">', latest.credits, '</span>',
+                '<span class="summary-unit">', cfg.unit, '</span>',
+              '</div>',
+              '<div class="summary-sub">',
+                'Poslední měření: ', latest.date.toLocaleString('cs-CZ'),
+              '</div>',
+              '<div class="summary-sub">',
+                'Min–max: ', stats.min, ' – ', stats.max, ', průměr: ', stats.avg.toFixed(1),
+              '</div>',
+              '<div class="summary-sub">',
+                'Trend: ', diffStartText, ' | Poslední změna: ', diffLastText,
+              '</div>',
+            '</div>'
+          ].join('');
+        }
+      });
+
+      container.innerHTML = html;
+
+      // history overview – posledních N záznamů napříč portály
+      const combined = allEntries.slice().sort((a, b) => b.date - a.date);
+      const maxRows = 30;
+      const rows = combined.slice(0, maxRows);
+
+      if (rows.length === 0) {
+        historyContainer.innerHTML = '<p class="empty">Zatím nemáš žádné záznamy v historii.</p>';
+        return;
+      }
+
+      let hhtml = [
+        '<table>',
+          '<thead>',
+            '<tr>',
+              '<th>Čas</th>',
+              '<th>Portál</th>',
+              '<th>Hodnota</th>',
+            '</tr>',
+          '</thead>',
+          '<tbody>'
+      ].join('');
+
+      rows.forEach(e => {
+        const label = e.portal === 'Teamio' ? 'Teamio' :
+                      e.portal === 'InWork' ? 'InWork' :
+                      e.portal;
+        hhtml += [
+          '<tr>',
+            '<td>', e.date.toLocaleString('cs-CZ'), '</td>',
+            '<td><span class="portal-pill">', label, '</span></td>',
+            '<td>', e.credits, '</td>',
+          '</tr>'
+        ].join('');
+      });
+
+      hhtml += '</tbody></table>';
+      historyContainer.innerHTML = hhtml;
+    }
+
+    function renderPortalDetail(portalKey) {
+      const cfg = PORTAL_CONFIG[portalKey];
+      const stats = statsByPortal[portalKey];
+      const prefix = portalKey.toLowerCase(); // teamio / inwork
+
+      const currentEl = document.getElementById(prefix + '-current');
+      const historyEl = document.getElementById(prefix + '-history');
+      const rangeEl = document.getElementById(prefix + '-chart-range');
+
+      if (!currentEl || !historyEl || !rangeEl) return;
+
+      if (!stats) {
+        currentEl.innerHTML =
+          '<p class="empty">V JSONu zatím nejsou žádné záznamy pro portál „' + cfg.label + '“.</p>';
+        historyEl.innerHTML = '';
+        clearChart(prefix + '-chart');
+        rangeEl.textContent = '';
+        return;
+      }
+
+      // aktuální stav
+      const last = stats.latest;
+      const first = stats.first;
+      const diffStart = stats.totalChange;
+      const diffStartText =
+        diffStart === 0 ? 'bez změny od prvního měření' :
+        diffStart > 0 ? '+' + diffStart + ' oproti prvnímu měření' :
+                        diffStart + ' oproti prvnímu měření';
+
+      const diffLast = stats.lastChange;
+      const diffLastText =
+        diffLast === null ? '–' :
+        diffLast === 0 ? 'bez změny od minulého měření' :
+        diffLast > 0 ? '+' + diffLast + ' oproti minulému měření' :
+                        diffLast + ' oproti minulému měření';
+
+      const metaHtml = [
+        '<div class="big-number">',
+          '<span>', last.credits, '</span>',
+          '<span class="unit">', cfg.unit, '</span>',
+        '</div>',
+        '<div class="meta-row">',
+          '<span class="pill">',
+            '<span class="pill-muted-dot pill-dot"></span>',
+            '<span>Poslední měření: ', last.date.toLocaleString('cs-CZ'), '</span>',
+          '</span>',
+          '<span class="pill">',
+            '<span class="pill-muted-dot pill-dot"></span>',
+            '<span>Počet měření: ', stats.count, '</span>',
+          '</span>',
+          '<span class="pill">',
+            '<span class="pill-warning-dot pill-dot"></span>',
+            '<span>Trend od startu: ', diffStartText, '</span>',
+          '</span>',
+          '<span class="pill">',
+            '<span class="pill-dot"></span>',
+            '<span>Poslední změna: ', diffLastText, '</span>',
+          '</span>',
+          '<span class="pill">',
+            '<span class="pill-muted-dot pill-dot"></span>',
+            '<span>Min–max: ', stats.min, ' – ', stats.max, ', průměr: ', stats.avg.toFixed(1), '</span>',
+          '</span>',
+        '</div>'
+      ].join('');
+
+      currentEl.innerHTML = metaHtml;
+
+      // historie
+      let hhtml = [
+        '<table>',
+          '<thead>',
+            '<tr>',
+              '<th>Čas</th>',
+              '<th>Portál</th>',
+              '<th>Hodnota</th>',
+            '</tr>',
+          '</thead>',
+          '<tbody>'
+      ].join('');
+
+      stats.desc.forEach(e => {
+        hhtml += [
+          '<tr>',
+            '<td>', e.date.toLocaleString('cs-CZ'), '</td>',
+            '<td><span class="portal-pill">', cfg.label, '</span></td>',
+            '<td>', e.credits, '</td>',
+          '</tr>'
+        ].join('');
+      });
+
+      hhtml += '</tbody></table>';
+      historyEl.innerHTML = hhtml;
+
+      // graf
+      renderChart(prefix + '-chart', stats.asc, cfg, rangeEl);
+    }
+
+    function clearChart(canvasId) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = canvas.clientWidth || 600;
+      const displayHeight = canvas.clientHeight || 230;
+      canvas.width = displayWidth * dpr;
+      canvas.height = displayHeight * dpr;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function renderChart(canvasId, entriesAsc, cfg, rangeEl) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      const dpr = window.devicePixelRatio || 1;
+      const displayWidth = canvas.clientWidth || 600;
+      const displayHeight = canvas.clientHeight || 230;
+      canvas.width = displayWidth * dpr;
+      canvas.height = displayHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const padding = { top: 14, right: 16, bottom: 24, left: 40 };
+      const width = displayWidth - padding.left - padding.right;
+      const height = displayHeight - padding.top - padding.bottom;
+
+      const credits = entriesAsc.map(e => e.credits);
+      const minVal = Math.min(...credits);
+      const maxVal = Math.max(...credits);
+      const margin = Math.max(2, Math.round((maxVal - minVal) * 0.15) || 5);
+      const yMin = minVal - margin;
+      const yMax = maxVal + margin;
+
+      const xs = entriesAsc.map((_, i) => {
+        if (entriesAsc.length === 1) return padding.left + width / 2;
+        return padding.left + (width * i) / (entriesAsc.length - 1);
+      });
+
+      const ys = credits.map(val => {
+        const ratio = (val - yMin) / (yMax - yMin || 1);
+        return padding.top + height - ratio * height;
+      });
+
+      ctx.clearRect(0, 0, displayWidth, displayHeight);
+
+      ctx.strokeStyle = 'rgba(148,163,184,0.35)';
+      ctx.lineWidth = 1;
+
+      // Y axis
+      ctx.beginPath();
+      ctx.moveTo(padding.left, padding.top);
+      ctx.lineTo(padding.left, padding.top + height);
+      ctx.stroke();
+
+      // X axis
+      ctx.beginPath();
+      ctx.moveTo(padding.left, padding.top + height);
+      ctx.lineTo(padding.left + width, padding.top + height);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(75,85,99,0.9)';
+      ctx.font = '10px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(Math.round(yMax)), padding.left - 6, padding.top + 2);
+      ctx.fillText(String(Math.round(yMin)), padding.left - 6, padding.top + height);
+
+      if (entriesAsc.length > 0) {
+        ctx.strokeStyle = '#0b72c3';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(xs[0], ys[0]);
+        for (let i = 1; i < xs.length; i++) {
+          ctx.lineTo(xs[i], ys[i]);
+        }
+        ctx.stroke();
+
+        ctx.fillStyle = '#0ea5e9';
+        for (let i = 0; i < xs.length; i++) {
+          ctx.beginPath();
+          ctx.arc(xs[i], ys[i], 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      if (entriesAsc.length > 0 && rangeEl) {
+        const first = entriesAsc[0];
+        const last = entriesAsc[entriesAsc.length - 1];
+        const rangeText = first.date.toLocaleDateString('cs-CZ') + ' — ' + last.date.toLocaleDateString('cs-CZ');
+        rangeEl.textContent = rangeText;
+      }
+    }
+  </script>
+</body>
+</html>

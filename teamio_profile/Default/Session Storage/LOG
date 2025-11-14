@@ -1,0 +1,8 @@
+2025/11/14-09:04:18.088 7b5c Reusing MANIFEST C:\job_portal_credits\teamio_profile\Default\Session Storage/MANIFEST-000001
+2025/11/14-09:04:18.119 7b5c Recovering log #8
+2025/11/14-09:04:18.121 7b5c Level-0 table #10: started
+2025/11/14-09:04:18.134 7b5c Level-0 table #10: 18668 bytes OK
+2025/11/14-09:04:18.164 7b5c Recovering log #10
+2025/11/14-09:04:18.180 7b5c Reusing old log C:\job_portal_credits\teamio_profile\Default\Session Storage/000010.log 
+2025/11/14-09:04:18.182 7b5c Delete type=0 #8
+2025/11/14-09:04:18.183 7b5c Delete type=2 #11
